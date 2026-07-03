@@ -1,10 +1,36 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, } from "react-router-dom";
+import { ToastContainer, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import App from './App.jsx'
+import Home from "./components/Home.jsx";
+import About from "./components/About.jsx";
+import Contact from "./components/Contact.jsx";
+import Login from "./components/Login.jsx";
+import Cart from "./components/Cart.jsx";
+import ProductDetail from "./components/ProductDetail.jsx";
+import ErrorPage from "./components/ErrorPage.jsx";
+
+const routeDefinitions = createRoutesFromElements(
+  <Route path="/" element={<App />} errorElement={<ErrorPage />}>
+    <Route index element={<Home />} />
+    <Route path="/home" element={<Home />} />
+    <Route path="/about" element={<About />} />
+    <Route path="/contact" element={<Contact />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/cart" element={<Cart />} />
+    <Route path="/products/:productId" element={<ProductDetail />} />
+  </Route>
+);
+
+const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+  <>
+    <RouterProvider router={appRouter} />
+    <ToastContainer position='top-center' theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"} transition={Bounce} />
+  </>
+
 )

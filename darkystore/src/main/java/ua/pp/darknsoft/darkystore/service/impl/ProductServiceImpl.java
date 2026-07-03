@@ -1,6 +1,7 @@
 package ua.pp.darknsoft.darkystore.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.pp.darknsoft.darkystore.dto.ProductRecord;
@@ -19,6 +20,6 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductRecord> getProducts() {
         productRepository.findById(1L).ifPresent(System.out::println);
-        return productRepository.findAll().stream().map(Product::toRecord).toList();
+        return productRepository.findAll(Sort.by("productId")).stream().map(Product::toRecord).toList();
     }
 }
