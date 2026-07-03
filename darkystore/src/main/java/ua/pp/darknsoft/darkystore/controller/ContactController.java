@@ -1,6 +1,7 @@
 package ua.pp.darknsoft.darkystore.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,6 @@ public class ContactController {
     @PostMapping
     public ResponseEntity<ContactRecord> createContact(@RequestBody ContactRecord contactRec) {
         contactRec = contactService.saveContact(contactRec);
-        return ResponseEntity.ok(contactRec);
+        return ResponseEntity.status(HttpStatus.CREATED).body(contactRec);
     }
 }
