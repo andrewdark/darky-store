@@ -1,5 +1,6 @@
 package ua.pp.darknsoft.darkystore.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ContactController {
     private final IContactService contactService;
 
     @PostMapping
-    public ResponseEntity<ContactRecord> createContact(@RequestBody ContactRecord contactRec) {
+    public ResponseEntity<ContactRecord> createContact(@Valid @RequestBody ContactRecord contactRec) {
         contactRec = contactService.saveContact(contactRec);
         return ResponseEntity.status(HttpStatus.CREATED).body(contactRec);
     }

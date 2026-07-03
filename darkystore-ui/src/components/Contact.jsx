@@ -61,7 +61,12 @@ const Contact = () => {
                         Name
                     </label>
                     <input id="name" name="name" type="text" placeholder="Your Name" className={textFieldStyle} required
-                        minLength={5} maxLength={30} />
+                        minLength={4} maxLength={30} />
+                    {actionData?.errors?.name && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {actionData.errors.name}
+                        </p>
+                    )}
                 </div>
 
                 {/* Email and mobile Row */}
@@ -70,6 +75,11 @@ const Contact = () => {
                     <div>
                         <label htmlFor="email" className={labelStyle}>Email</label>
                         <input id="email" name="email" type="email" placeholder="Your Email" className={textFieldStyle} required />
+                        {actionData?.errors?.email && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {actionData.errors.email}
+                            </p>
+                        )}
                     </div>
 
                     {/* Mobile Field */}
@@ -79,6 +89,11 @@ const Contact = () => {
                             title="Mobile number must be exactly 10 digits" placeholder="Your Mobile Number"
                             className={textFieldStyle}
                         />
+                        {actionData?.errors?.mobileNumber && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {actionData.errors.mobileNumber}
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -86,6 +101,11 @@ const Contact = () => {
                 <div>
                     <label htmlFor="message" className={labelStyle}>Message</label>
                     <textarea id="message" name="message" rows="4" placeholder="Your Message" className={textFieldStyle} required minLength={5} maxLength={500}></textarea>
+                    {actionData?.errors?.message && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {actionData.errors.message}
+                        </p>
+                    )}
                 </div>
                 {/* Submit Button */}
                 <div className="text-center">
@@ -120,7 +140,9 @@ export async function contactAction({ request, params }) {
         return { success: true, id: response.data.contactId };
         // return redirect("/home");
     } catch (error) {
-
+        if (error.response?.status === 400) {
+            return { success: false, errors: error.response?.data };
+        }
         throw new Response(
             error.response?.data?.error ||
             error.message || "Failed to submit your data. Please try again.",
