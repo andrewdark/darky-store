@@ -1,9 +1,9 @@
-
-const Price = () => {
+const Price = ({ currency, price }) => {
     return (
-        <div>
-            Price.jsx
-        </div>
+        <>
+            {currency}
+            <span>{price}</span>
+        </>
     );
 };
 
