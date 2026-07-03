@@ -122,6 +122,7 @@ export async function contactAction({ request, params }) {
     } catch (error) {
 
         throw new Response(
+            error.response?.data?.error ||
             error.message || "Failed to submit your data. Please try again.",
             { status: error.status || 500 }
         );

@@ -35,8 +35,9 @@ export async function productsLoader() {
 
         return response.data;
     } catch (error) {
-
+        console.log(error.response?.data);
         throw new Response(
+            error.response?.data?.error ||
             error.message || "Failed to fetch products. Please try again.",
             { status: error.status || 500 }
         );
