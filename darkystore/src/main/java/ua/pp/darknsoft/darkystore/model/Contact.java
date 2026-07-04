@@ -1,14 +1,10 @@
 package ua.pp.darknsoft.darkystore.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.validator.constraints.Length;
 import ua.pp.darknsoft.darkystore.dto.ContactRecord;
 
-import java.time.Instant;
 import java.util.Objects;
 
 @Getter
@@ -18,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "contacts")
-public class Contact {
+public class Contact extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contact_id", nullable = false)
@@ -41,23 +37,8 @@ public class Contact {
     @Column(name = "message", nullable = false)
     private String message;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @Column(name = "created_by", nullable = false, length = 20)
-    private String createdBy;
-
-    @ColumnDefault("NULL")
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @ColumnDefault("NULL")
-    @Column(name = "updated_by", length = 20)
-    private String updatedBy;
-
     public ContactRecord toRecord() {
-        return new ContactRecord(contactId, name, email, mobileNumber, message, createdAt, createdBy, updatedAt, updatedBy);
+        return new ContactRecord(contactId, name, email, mobileNumber, message, super.getCreatedAt(), super.getCreatedBy(), super.getUpdatedAt(), super.getUpdatedBy());
     }
 
     @Override
