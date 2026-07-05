@@ -2,6 +2,7 @@ package ua.pp.darknsoft.darkystore.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import ua.pp.darknsoft.darkystore.dto.ProductRecord;
 
 import java.math.BigDecimal;
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

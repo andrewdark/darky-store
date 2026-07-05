@@ -3,13 +3,14 @@ package ua.pp.darknsoft.darkystore.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import ua.pp.darknsoft.darkystore.dto.ContactRecord;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

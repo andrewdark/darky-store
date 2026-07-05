@@ -17,10 +17,6 @@ public record ProductRecord(Long productId, String name, String description, Big
                 .price(price)
                 .popularity(popularity)
                 .imageUrl(imageUrl)
-                .createdAt(createdAt)
-                .createdBy(createdBy)
-                .updatedAt(updatedAt)
-                .updatedBy(updatedBy)
                 .build();
     }
 }

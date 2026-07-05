@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.Length;
 import ua.pp.darknsoft.darkystore.model.Contact;
 
 import java.time.Instant;
@@ -23,10 +22,6 @@ public record ContactRecord(Long contactId,
                 .email(email)
                 .mobileNumber(mobileNumber)
                 .message(message)
-                .createdAt(createdAt)
-                .createdBy(createdBy)
-                .updatedAt(updatedAt)
-                .updatedBy(updatedBy)
                 .build();
     }
 }
