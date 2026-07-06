@@ -1,13 +1,5 @@
-import {
-    createContext,
-    useEffect,
-    useContext,
-    useReducer,
-} from "react";
-
-export const CartContext = createContext();
-
-export const useCart = () => useContext(CartContext);
+import { useEffect, useReducer } from "react";
+import { CartContext } from "./cart-context"; // Імпорт контексту з іншого файлу
 
 const ADD_TO_CART = "ADD_TO_CART";
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
@@ -40,7 +32,7 @@ const cartReducer = (prevCart, action) => {
     }
 };
 
-export const CartProvider = ({ children }) => {
+const CartProvider = ({ children }) => {
 
     const initialCartState = (() => {
         try {
@@ -86,3 +78,5 @@ export const CartProvider = ({ children }) => {
         </CartContext.Provider>
     );
 }
+
+export default CartProvider;

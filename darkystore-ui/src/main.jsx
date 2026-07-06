@@ -12,7 +12,7 @@ import Login from "./components/Login.jsx";
 import Cart from "./components/Cart.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
-import { CartProvider } from "./store/cart-context.jsx";
+import CartProvider from "./store/CartProvider.jsx";
 
 import { productsLoader } from "./components/Home.jsx";
 import { contactAction } from "./components/Contact.jsx";
