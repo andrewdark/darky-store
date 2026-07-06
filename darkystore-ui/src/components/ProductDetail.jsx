@@ -2,6 +2,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import { faArrowLeft, faShoppingCart, faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCart } from "../store/cart-context";
 
 const ProductDetail = () => {
     const location = useLocation();
@@ -11,6 +12,12 @@ const ProductDetail = () => {
     const [isHovering, setIsHovering] = useState(false);
     const [backgroundPosition, setBackgroundPosition] = useState("center");
     const zoomRef = useRef(null);
+    const { addToCart } = useCart();
+
+    const handleAddToCart = () => {
+        if (quantity < 1) return;
+        addToCart(product, quantity);
+    };
 
     const handleMouseMove = (e) => {
         const { left, top, width, height } =
@@ -92,7 +99,7 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Add to Cart Button */}
-                        <button className="w-full px-4 py-2 bg-primary dark:bg-light text-white dark:text-black rounded-md text-lg font-semibold hover:bg-dark dark:hover:bg-lighter transition">
+                        <button onClick={handleAddToCart} className="w-full px-4 py-2 bg-primary dark:bg-light text-white dark:text-black rounded-md text-lg font-semibold hover:bg-dark dark:hover:bg-lighter transition">
                             Add to Cart
                             <FontAwesomeIcon icon={faShoppingCart} className="ml-2" />
                         </button>
