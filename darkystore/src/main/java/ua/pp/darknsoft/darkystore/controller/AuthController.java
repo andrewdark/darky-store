@@ -8,22 +8,39 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import ua.pp.darknsoft.darkystore.dto.LoginRequestDto;
 import ua.pp.darknsoft.darkystore.dto.LoginResponseDto;
+import ua.pp.darknsoft.darkystore.dto.UserDto;
+import ua.pp.darknsoft.darkystore.util.JwtUtil;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
         try {
             Authentication authentication = authenticationManager.authenticate(new
-                    UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password()));
-            return ResponseEntity.ok(new LoginResponseDto("isAuth: " + authentication.isAuthenticated(), null, null));
+                    UsernamePasswordAuthenticationToken(loginRequestDto.username(),
+                    loginRequestDto.password()));
+            var userDto = new UserDto();
+            var loggedInUser = (User) authentication.getPrincipal();
+            if(Objects.isNull(loggedInUser)) {
+                return buildErrorResponse(HttpStatus.UNAUTHORIZED,
+                        "Invalid username or password");
+            }
+
+            userDto.setName(loggedInUser.getUsername());
+            String jwtToken = jwtUtil.generateJwtToken(authentication);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));
         } catch (BadCredentialsException ex) {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                     "Invalid username or password");

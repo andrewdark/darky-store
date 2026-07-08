@@ -1,16 +1,34 @@
 import PageTitle from "./PageTitle";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Form, Link, useActionData, useNavigate } from "react-router-dom";
+import apiClient from "../api/apiClient";
+import { toast } from "react-toastify";
 
 const Login = () => {
     const labelStyle = "block text-lg font-semibold text-primary dark:text-light mb-2";
     const textFieldStyle = "w-full px-4 py-2 text-base border rounded-md transition border-primary dark:border-light focus:ring focus:ring-dark dark:focus:ring-lighter focus:outline-none text-gray-800 dark:text-lighter bg-white dark:bg-gray-600 placeholder-gray-400 dark:placeholder-gray-300";
+    const actionData = useActionData();
+    const navigate = useNavigate();
+    const from = sessionStorage.getItem("redirectPath") || "/home";
+
+    useEffect(() => {
+        if (actionData?.success) {
+            console.log(actionData.jwtToken, actionData.user);
+            toast.success("Success!");
+            sessionStorage.removeItem("redirectPath");
+            navigate(from);
+        } else if (actionData?.errors) {
+            toast.error(actionData.errors.message || "Login failed.");
+        }
+    }, [actionData]);
+
     return (
         <div className="flex items-center justify-center font-primary dark:bg-darkbg">
             <div className="bg-white dark:bg-gray-700 shadow-md rounded-lg max-w-md w-full px-8 py-6">
                 {/* Title */}
                 <PageTitle title="Login" />
                 {/* Form */}
-                <form className="space-y-6">
+                <Form method="POST" className="space-y-6">
                     {/* Email Field */}
                     <div>
                         <label htmlFor="username" className={labelStyle}>
@@ -37,7 +55,7 @@ const Login = () => {
                             name="password"
                             placeholder="Your Password"
                             required
-                            minLength={8}
+                            minLength={4}
                             maxLength={20}
                             className={textFieldStyle}
                         />
@@ -52,7 +70,7 @@ const Login = () => {
                             Login
                         </button>
                     </div>
-                </form>
+                </Form>
 
                 {/* Register Link */}
                 <p className="text-center text-gray-600 dark:text-gray-400 mt-4">
@@ -70,3 +88,31 @@ const Login = () => {
 };
 
 export default Login;
+
+export async function loginAction({ request }) {
+    const data = await request.formData();
+
+    const loginData = {
+        username: data.get("username"),
+        password: data.get("password"),
+    };
+
+    try {
+        const response = await apiClient.post("/auth/login", loginData);
+        const { message, user, jwtToken } = response.data;
+        return { success: true, message, user, jwtToken };
+    } catch (error) {
+        if (error.response?.status === 401) {
+            return {
+                success: false,
+                errors: { message: "Invalid username or password" },
+            };
+        }
+        throw new Response(
+            error.response?.data?.message ||
+            error.message ||
+            "Failed to login. Please try again.",
+            { status: error.response?.status || 500 }
+        );
+    }
+}
