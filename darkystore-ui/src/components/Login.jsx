@@ -3,17 +3,19 @@ import { useEffect } from "react";
 import { Form, Link, useActionData, useNavigate } from "react-router-dom";
 import apiClient from "../api/apiClient";
 import { toast } from "react-toastify";
+import { useAuth } from "../store/auth-context";
 
 const Login = () => {
     const labelStyle = "block text-lg font-semibold text-primary dark:text-light mb-2";
     const textFieldStyle = "w-full px-4 py-2 text-base border rounded-md transition border-primary dark:border-light focus:ring focus:ring-dark dark:focus:ring-lighter focus:outline-none text-gray-800 dark:text-lighter bg-white dark:bg-gray-600 placeholder-gray-400 dark:placeholder-gray-300";
     const actionData = useActionData();
     const navigate = useNavigate();
+    const { loginSuccess } = useAuth();
     const from = sessionStorage.getItem("redirectPath") || "/home";
 
     useEffect(() => {
         if (actionData?.success) {
-            console.log(actionData.jwtToken, actionData.user);
+            loginSuccess(actionData.jwtToken, actionData.user);
             toast.success("Success!");
             sessionStorage.removeItem("redirectPath");
             navigate(from);

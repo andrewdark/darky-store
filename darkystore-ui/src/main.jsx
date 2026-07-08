@@ -13,6 +13,7 @@ import Cart from "./components/Cart.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
 import CartProvider from "./store/CartProvider.jsx";
+import AuthProvider from "./store/AuthProvider.jsx";
 
 import { productsLoader } from "./components/Home.jsx";
 import { contactAction } from "./components/Contact.jsx";
@@ -34,9 +35,11 @@ const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById('root')).render(
   <>
-    <CartProvider>
-      <RouterProvider router={appRouter} />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={appRouter} />
+      </CartProvider>
+    </AuthProvider>
 
     <ToastContainer position='top-center' theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"} transition={Bounce} />
   </>
