@@ -1,13 +1,27 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBasket, faTags, faSun, faMoon, } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
-import { Link, NavLink } from 'react-router-dom';
+import { faShoppingBasket, faTags, faSun, faMoon, faAngleDown, } from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect, useRef } from "react";
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from "../store/cart-context";
+import { useAuth } from '../store/auth-context';
+import { toast } from "react-toastify";
 
 const Header = () => {
+    const isAdmin = true;
+    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+    const [isAdminMenuOpen, setAdminMenuOpen] = useState(false);
+    const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
+    const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
+
     const { totalQuantity } = useCart();
+    const { isAuthenticated, logout, user } = useAuth();
     const navLinkClass = "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
+    const dropdownLinkClass = "block w-full text-left px-4 py-2 text-2xl md:text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
+
+    const userMenuRef = useRef();
+    const navigate = useNavigate();
+
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem("theme") === "dark" ? "dark" : "light";
     });
@@ -27,6 +41,13 @@ const Header = () => {
             localStorage.setItem("theme", newTheme);
             return newTheme;
         });
+    };
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        logout();
+        toast.success("Logged out successfully!");
+        navigate("/home");
     };
 
     return (
@@ -64,9 +85,79 @@ const Header = () => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="/login" className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
-                                Login
-                            </NavLink>
+                            {isAuthenticated ? (
+                                <div className="relative" ref={userMenuRef}>
+                                    <button
+                                        onClick={toggleUserMenu}
+                                        className="relative text-primary"
+                                    >
+                                        <span className={navLinkClass}>Hello {user?.name || 'NoName'}</span>
+                                        <FontAwesomeIcon
+                                            icon={faAngleDown}
+                                            className="text-primary dark:text-light w-6 h-6"
+                                        />
+                                    </button>
+                                    {isUserMenuOpen && (
+                                        <div className="absolute right-0 w-64 sm:w-48 bg-normalbg dark:bg-darkbg border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20 transition ease-in-out duration-200">
+                                            <ul className="py-2">
+                                                <li>
+                                                    <Link to="/profile" className={dropdownLinkClass}>
+                                                        Profile
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link to="/orders" className={dropdownLinkClass}>
+                                                        Orders
+                                                    </Link>
+                                                </li>
+                                                {isAdmin && (
+                                                    <li>
+                                                        <button
+                                                            onClick={toggleAdminMenu}
+                                                            className={`${dropdownLinkClass} flex items-center justify-between`}
+                                                        >
+                                                            Admin
+                                                            <FontAwesomeIcon icon={faAngleDown} />
+                                                        </button>
+                                                        {isAdminMenuOpen && (
+                                                            <ul className="ml-4 mt-2 space-y-2">
+                                                                <li>
+                                                                    <Link
+                                                                        to="/admin/orders"
+                                                                        className={dropdownLinkClass}
+                                                                    >
+                                                                        Orders
+                                                                    </Link>
+                                                                </li>
+                                                                <li>
+                                                                    <Link
+                                                                        to="/admin/messages"
+                                                                        className={dropdownLinkClass}
+                                                                    >
+                                                                        Messages
+                                                                    </Link>
+                                                                </li>
+                                                            </ul>
+                                                        )}
+                                                    </li>
+                                                )}
+
+                                                <li>
+                                                    <Link
+                                                        to="/home"
+                                                        onClick={handleLogout}
+                                                        className={dropdownLinkClass}
+                                                    >
+                                                        Logout
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>) : (<NavLink to="/login" className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
+                                    Login
+                                </NavLink>)}
+
                         </li>
                         <li>
                             <Link to="/cart" className=" relative text-primary py-2">
