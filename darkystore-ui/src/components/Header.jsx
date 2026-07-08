@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket, faTags, faSun, faMoon, faAngleDown, } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from "../store/cart-context";
 import { useAuth } from '../store/auth-context';
 import { toast } from "react-toastify";
@@ -19,6 +19,7 @@ const Header = () => {
     const navLinkClass = "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
     const dropdownLinkClass = "block w-full text-left px-4 py-2 text-2xl md:text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
 
+    const location = useLocation();
     const userMenuRef = useRef();
     const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ const Header = () => {
         return localStorage.getItem("theme") === "dark" ? "dark" : "light";
     });
 
+    // Ефект №2: Зміна тємки
     useEffect(() => {
         //document.documentElement - це <html> тег по суті
         if (theme === "dark") {
@@ -35,6 +37,24 @@ const Header = () => {
         }
     }, [theme]);
 
+    // Ефект №2: Тільки для меню та кліків ззовні (залежить від location.pathname)
+    useEffect(() => {
+        if (!isUserMenuOpen && !isAdminMenuOpen) return;
+
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setUserMenuOpen(false);
+                setAdminMenuOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+
+        // Обов'язкова функція очищення!
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isUserMenuOpen, isAdminMenuOpen]);
+
     const toggleTheme = () => {
         setTheme((prevTheme) => {
             const newTheme = prevTheme === "light" ? "dark" : "light";
@@ -43,8 +63,14 @@ const Header = () => {
         });
     };
 
+    const closeMenus = () => {
+        setUserMenuOpen(false);
+        setAdminMenuOpen(false);
+    };
+
     const handleLogout = (e) => {
         e.preventDefault();
+        closeMenus();
         logout();
         toast.success("Logged out successfully!");
         navigate("/home");
@@ -70,17 +96,17 @@ const Header = () => {
                     </button>
                     <ul className="flex space-x-6">
                         <li>
-                            <NavLink to="/home" className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
+                            <NavLink to="/home" onClick={closeMenus} className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
                                 Home
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="/about" className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
+                            <NavLink to="/about" onClick={closeMenus} className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
                                 About
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="/contact" className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
+                            <NavLink to="/contact" onClick={closeMenus} className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
                                 Contact
                             </NavLink>
                         </li>
