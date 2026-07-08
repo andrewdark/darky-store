@@ -10,10 +10,12 @@ import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
 import Login from "./components/Login.jsx";
 import Cart from "./components/Cart.jsx";
+import CheckoutForm from "./components/CheckoutForm.jsx"
 import ProductDetail from "./components/ProductDetail.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
 import CartProvider from "./store/CartProvider.jsx";
 import AuthProvider from "./store/AuthProvider.jsx";
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 import { productsLoader } from "./components/Home.jsx";
 import { contactAction } from "./components/Contact.jsx";
@@ -28,6 +30,9 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/login" element={<Login />} action={loginAction} />
     <Route path="/cart" element={<Cart />} />
     <Route path="/products/:productId" element={<ProductDetail />} />
+    <Route element={<ProtectedRoute />}>
+      <Route path="/checkout" element={<CheckoutForm />} />
+    </Route>
   </Route>
 );
 

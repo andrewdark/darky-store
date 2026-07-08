@@ -26,11 +26,11 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center font-primary dark:bg-darkbg">
-            <div className="bg-white dark:bg-gray-700 shadow-md rounded-lg max-w-md w-full px-8 py-6">
+            <div className="bg-white dark:bg-gray-700 shadow-md rounded-lg max-w-sm 2xl:max-w-md w-full px-8 py-6">
                 {/* Title */}
                 <PageTitle title="Login" />
                 {/* Form */}
-                <Form method="POST" className="space-y-6">
+                <Form method="POST" className="space-y-4">
                     {/* Email Field */}
                     <div>
                         <label htmlFor="username" className={labelStyle}>
@@ -64,7 +64,7 @@ const Login = () => {
                     </div>
 
                     {/* Submit Button */}
-                    <div>
+                    <div className='mt-16'>
                         <button
                             type="submit"
                             className="w-full px-6 py-2 text-white dark:text-black text-xl rounded-md transition duration-200 bg-primary dark:bg-light hover:bg-dark dark:hover:bg-lighter"
