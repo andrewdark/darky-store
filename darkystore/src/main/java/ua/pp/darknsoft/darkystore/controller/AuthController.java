@@ -13,11 +13,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ua.pp.darknsoft.darkystore.dto.LoginRequestDto;
 import ua.pp.darknsoft.darkystore.dto.LoginResponseDto;
 import ua.pp.darknsoft.darkystore.dto.RegisterRequestDto;
 import ua.pp.darknsoft.darkystore.dto.UserDto;
+import ua.pp.darknsoft.darkystore.service.IAuthService;
 import ua.pp.darknsoft.darkystore.util.JwtUtil;
 
 import java.util.List;
@@ -31,6 +36,7 @@ public class AuthController {
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final IAuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
@@ -63,7 +69,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) throws MethodArgumentNotValidException {
+        authService.checkRegistrationData(registerRequestDto);
+        authService.register(registerRequestDto);
         inMemoryUserDetailsManager
                 .createUser(new User(registerRequestDto.email(), passwordEncoder.encode(registerRequestDto.password()), List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 
