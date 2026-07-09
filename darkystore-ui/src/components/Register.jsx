@@ -204,8 +204,12 @@ export async function registerAction({ request }) {
         if (error.response?.status === 400) {
             return { success: false, errors: error.response?.data };
         }
+        if (error.response?.status === 500 && error.response?.data?.error === "user should not exist") {
+            return { success: false, errors: { email: "Email already exist" } };
+        }
+
         throw new Response(
-            error.response?.data?.errorMessage ||
+            error.response?.data?.error ||
             error.message ||
             "Failed to submit your message. Please try again.",
             { status: error.status || 500 }
