@@ -17,7 +17,7 @@ const Header = () => {
     const { totalQuantity } = useCart();
     const { isAuthenticated, logout, user } = useAuth();
     const navLinkClass = "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
-    const dropdownLinkClass = "block w-full text-left px-4 py-2 text-2xl md:text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
+    const dropdownLinkClass = "block w-full text-left px-4 py-2 text-base md:text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
 
     const location = useLocation();
     const userMenuRef = useRef();
@@ -53,7 +53,7 @@ const Header = () => {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isUserMenuOpen, isAdminMenuOpen]);
+    }, [location.pathname, isUserMenuOpen, isAdminMenuOpen]);
 
     const toggleTheme = () => {
         setTheme((prevTheme) => {
@@ -127,12 +127,12 @@ const Header = () => {
                                         <div className="absolute right-0 w-64 sm:w-48 bg-normalbg dark:bg-darkbg border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20 transition ease-in-out duration-200">
                                             <ul className="py-2">
                                                 <li>
-                                                    <Link to="/profile" className={dropdownLinkClass}>
+                                                    <Link to="/profile" onClick={closeMenus} className={dropdownLinkClass}>
                                                         Profile
                                                     </Link>
                                                 </li>
                                                 <li>
-                                                    <Link to="/orders" className={dropdownLinkClass}>
+                                                    <Link to="/orders" onClick={closeMenus} className={dropdownLinkClass}>
                                                         Orders
                                                     </Link>
                                                 </li>
@@ -149,16 +149,14 @@ const Header = () => {
                                                             <ul className="ml-4 mt-2 space-y-2">
                                                                 <li>
                                                                     <Link
-                                                                        to="/admin/orders"
-                                                                        className={dropdownLinkClass}
+                                                                        to="/admin/orders" onClick={closeMenus} className={dropdownLinkClass}
                                                                     >
                                                                         Orders
                                                                     </Link>
                                                                 </li>
                                                                 <li>
                                                                     <Link
-                                                                        to="/admin/messages"
-                                                                        className={dropdownLinkClass}
+                                                                        to="/admin/messages" onClick={closeMenus} className={dropdownLinkClass}
                                                                     >
                                                                         Messages
                                                                     </Link>
