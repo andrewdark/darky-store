@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
@@ -49,27 +50,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(DaoAuthenticationProvider authenticationProvider) {
+    public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
 
         return new ProviderManager(authenticationProvider);
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+//
+//        var daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+//        return daoAuthenticationProvider;
+//    }
 
-        var daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-        return daoAuthenticationProvider;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var user1 = User.builder().username("dark")
-                .password("$2a$12$p799BoBeZUMuodystRqYWeV5Hah4TGZSBZC5DvQ1XcacIt0Yu.9n.").roles("USER").build();
-        var user2 = User.builder().username("admin")
-                .password("$2a$12$neiGI7viF8rIb8YBgniWruvNZSQNqtG4F3Mt3631ehov0BEk/N9vO").roles("USER", "ADMIN").build();
-        return new InMemoryUserDetailsManager(user1, user2);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        var user1 = User.builder().username("dark")
+//                .password("$2a$12$p799BoBeZUMuodystRqYWeV5Hah4TGZSBZC5DvQ1XcacIt0Yu.9n.").roles("USER").build();
+//        var user2 = User.builder().username("admin")
+//                .password("$2a$12$neiGI7viF8rIb8YBgniWruvNZSQNqtG4F3Mt3631ehov0BEk/N9vO").roles("USER", "ADMIN").build();
+//        return new InMemoryUserDetailsManager(user1, user2);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

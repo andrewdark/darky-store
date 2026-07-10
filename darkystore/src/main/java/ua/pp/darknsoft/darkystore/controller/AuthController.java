@@ -9,10 +9,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +20,10 @@ import ua.pp.darknsoft.darkystore.dto.LoginRequestDto;
 import ua.pp.darknsoft.darkystore.dto.LoginResponseDto;
 import ua.pp.darknsoft.darkystore.dto.RegisterRequestDto;
 import ua.pp.darknsoft.darkystore.dto.UserDto;
+import ua.pp.darknsoft.darkystore.security.AppUser;
 import ua.pp.darknsoft.darkystore.service.IAuthService;
 import ua.pp.darknsoft.darkystore.util.JwtUtil;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -33,8 +31,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final IAuthService authService;
 
@@ -45,13 +41,17 @@ public class AuthController {
                     UsernamePasswordAuthenticationToken(loginRequestDto.username(),
                     loginRequestDto.password()));
             var userDto = new UserDto();
-            var loggedInUser = (User) authentication.getPrincipal();
+            var loggedInUser = (AppUser) authentication.getPrincipal();
             if (Objects.isNull(loggedInUser)) {
                 return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                         "Invalid username or password");
             }
 
+            userDto.setUserId(loggedInUser.getId());
             userDto.setName(loggedInUser.getUsername());
+            userDto.setMobileNumber(loggedInUser.getMobileNumber());
+            userDto.setEmail(loggedInUser.getEmail());
+
             String jwtToken = jwtUtil.generateJwtToken(authentication);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));
@@ -62,6 +62,7 @@ public class AuthController {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED,
                     "Authentication failed");
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                     "An unexpected error occurred");
         }
@@ -72,9 +73,6 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) throws MethodArgumentNotValidException {
         authService.checkRegistrationData(registerRequestDto);
         authService.register(registerRequestDto);
-        inMemoryUserDetailsManager
-                .createUser(new User(registerRequestDto.email(), passwordEncoder.encode(registerRequestDto.password()), List.of(new SimpleGrantedAuthority("ROLE_USER"))));
-
         return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
     }
 
