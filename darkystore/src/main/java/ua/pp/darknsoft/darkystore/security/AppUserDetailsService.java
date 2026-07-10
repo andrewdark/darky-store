@@ -25,6 +25,7 @@ public class AppUserDetailsService implements UserDetailsService {
                         "User details not found for the user: " + username)
         );
         AppUser abbUser = new AppUser(customer.getCustomerId(), customer.getEmail(), customer.getPasswordHash(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        abbUser.setName(customer.getName());
         abbUser.setEmail(customer.getEmail());
         abbUser.setMobileNumber(String.valueOf(customer.getMobileNumber()));
         return abbUser;

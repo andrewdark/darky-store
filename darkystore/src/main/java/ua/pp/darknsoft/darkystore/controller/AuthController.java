@@ -48,7 +48,7 @@ public class AuthController {
             }
 
             userDto.setUserId(loggedInUser.getId());
-            userDto.setName(loggedInUser.getUsername());
+            userDto.setName(loggedInUser.getName());
             userDto.setMobileNumber(loggedInUser.getMobileNumber());
             userDto.setEmail(loggedInUser.getEmail());
 

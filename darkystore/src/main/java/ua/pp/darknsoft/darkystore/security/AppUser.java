@@ -14,6 +14,7 @@ public class AppUser extends User {
     private final Long id;
     private String mobileNumber;
     private String email;
+    private String name;
 
     public AppUser(Long id, String username, @Nullable String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
