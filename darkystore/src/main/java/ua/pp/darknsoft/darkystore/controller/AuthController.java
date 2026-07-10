@@ -69,7 +69,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) throws MethodArgumentNotValidException {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) throws MethodArgumentNotValidException {
         authService.checkRegistrationData(registerRequestDto);
         authService.register(registerRequestDto);
         inMemoryUserDetailsManager

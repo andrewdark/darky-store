@@ -1,10 +1,11 @@
 package ua.pp.darknsoft.darkystore.service.impl;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +28,21 @@ import static ua.pp.darknsoft.darkystore.exception.ExceptionHelper.createValidat
 public class AuthServiceImpl implements IAuthService {
     private final CustomerRepository  customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CompromisedPasswordChecker compromisedPasswordChecker;
 
     @Override
     public void checkRegistrationData(RegisterRequestDto registerRequestDto) throws MethodArgumentNotValidException {
 
         Optional<Customer> res = customerRepository.findByEmailOrMobileNumber(registerRequestDto.email(), registerRequestDto.mobileNumber());
+        CompromisedPasswordDecision decision = compromisedPasswordChecker.check(registerRequestDto.password());
+        Map<String, String> errors = new HashMap<>();
+
+        if(decision.isCompromised()) {
+            errors.put("password", "Choose a strong password");
+        }
 
         if(res.isPresent()){
-
-            Map<String, String> errors = new HashMap<>();
-            Customer customer =res.get();
+            Customer customer = res.get();
 
             if (customer.getEmail().equalsIgnoreCase(registerRequestDto.email())) {
                 errors.put( "email", "Email is already registered");
@@ -45,8 +51,10 @@ public class AuthServiceImpl implements IAuthService {
             if (customer.getMobileNumber().equals(registerRequestDto.mobileNumber())) {
                 errors.put( "mobileNumber", "Mobile number is already registered");
             }
-            throw createValidationException(res, errors);
+
         }
+
+        if(!errors.isEmpty()){throw createValidationException(res, errors);}
     }
 
     @Override

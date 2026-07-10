@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Objects;
 
 public class ExceptionHelper {
     public ExceptionHelper() {
@@ -15,6 +16,9 @@ public class ExceptionHelper {
     }
 
     public static MethodArgumentNotValidException createValidationException(@NotNull Object object, @NotNull Map<String, String> errors) {
+
+        Objects.requireNonNull(object, "Param 'object' cannot be null!");
+        Objects.requireNonNull(errors, "Param 'errors' cannot be null!");
 
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(object, object.getClass().getSimpleName());
 
