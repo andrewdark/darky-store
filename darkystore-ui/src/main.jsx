@@ -22,6 +22,7 @@ import Orders from './components/Orders.jsx';
 import { Messages, AdminOrders } from './components/admin'
 
 import { productsLoader } from "./components/Home.jsx";
+import { profileLoader, profileAction } from "./components/Profile.jsx";
 import { contactAction } from "./components/Contact.jsx";
 import { loginAction } from "./components/Login.jsx";
 import { registerAction } from "./components/Register.jsx";
@@ -38,7 +39,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/products/:productId" element={<ProductDetail />} />
     <Route element={<ProtectedRoute />}>
       <Route path="/checkout" element={<CheckoutForm />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/profile" element={<Profile />} loader={profileLoader} action={profileAction} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/admin/orders" element={<AdminOrders />} />
       <Route path="/admin/messages" element={<Messages />} />

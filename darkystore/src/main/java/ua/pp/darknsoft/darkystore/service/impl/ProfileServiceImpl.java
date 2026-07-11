@@ -16,6 +16,7 @@ public class ProfileServiceImpl implements IProfileService {
 
     @Override
     public ProfileResponseDto getProfile() {
+
         return new ProfileResponseDto("DUMMY DEGAN");
     }
 
