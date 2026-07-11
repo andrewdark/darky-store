@@ -18,9 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ua.pp.darknsoft.darkystore.security.filter.JWTTokenValidatorFilter;
 
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class SecurityConfig {
                             requests.anyRequest().authenticated();
                         }
                 );
+        http.addFilterBefore(authenticationJwtTokenFilter(), BasicAuthenticationFilter.class);
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
 
@@ -63,7 +66,7 @@ public class SecurityConfig {
 //        return daoAuthenticationProvider;
 //    }
 
-//    @Bean
+    //    @Bean
 //    public UserDetailsService userDetailsService() {
 //        var user1 = User.builder().username("dark")
 //                .password("$2a$12$p799BoBeZUMuodystRqYWeV5Hah4TGZSBZC5DvQ1XcacIt0Yu.9n.").roles("USER").build();
@@ -71,6 +74,10 @@ public class SecurityConfig {
 //                .password("$2a$12$neiGI7viF8rIb8YBgniWruvNZSQNqtG4F3Mt3631ehov0BEk/N9vO").roles("USER", "ADMIN").build();
 //        return new InMemoryUserDetailsManager(user1, user2);
 //    }
+    @Bean
+    public JWTTokenValidatorFilter authenticationJwtTokenFilter() {
+        return new JWTTokenValidatorFilter(publicPaths);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -87,7 +94,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173", "http://192.168.9.102:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); //Collections.singletonList("*")
-        config.setAllowedHeaders(List.of("Content-Type", "Authorization")); //, "X-Requested-With"
+        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept")); //, "X-Requested-With"
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
