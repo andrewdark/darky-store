@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import apiClient from "../api/apiClient";
-import { Form, useLoaderData, useActionData, useNavigation, useNavigate, replace, } from "react-router-dom";
+import { Form, useLoaderData, useActionData, useNavigate, } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import { toast } from "react-toastify";
 import { useAuth } from "../store/auth-context";
 
 const Profile = () => {
     const initialProfileData = useLoaderData();
-    const [profileData, setProfileData] = useState(initialProfileData);
     const isSubmitting = true;
     const actionData = useActionData();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
+
+    const profileData = actionData?.success ? actionData.profileData : initialProfileData;
 
     useEffect(() => {
         if (actionData?.success) {
@@ -22,10 +25,9 @@ const Profile = () => {
                 navigate("/login");
             } else {
                 toast.success("Your Profile details are saved successfully!");
-                setProfileData(actionData.profileData);
             }
         }
-    }, [actionData]);
+    }, [actionData, logout, navigate]);
 
     const labelStyle = "block text-lg font-semibold text-primary dark:text-light mb-2";
     const h2Style = "block text-2xl font-semibold text-primary dark:text-light mb-2";
