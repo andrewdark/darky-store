@@ -9,6 +9,3 @@ CREATE TABLE IF NOT EXISTS roles
     updated_by  text                            DEFAULT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers (customer_id) ON DELETE CASCADE
 );
-
-INSERT INTO roles (customer_id, name, created_at, created_by)
-VALUES (1, 'ROLE_ADMIN', CURRENT_TIMESTAMP, 'Anonymous user');

@@ -36,7 +36,7 @@ public class JwtUtil {
         claims.put("name", fetchedUser.getName());
         claims.put("username", fetchedUser.getUsername());
         claims.put("email", fetchedUser.getEmail());
-        claims.put("role", fetchedUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray());
+        claims.put("roles", fetchedUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray());
 
         jwt = Jwts.builder()
                 .header().type("JWT")

@@ -28,7 +28,6 @@ public class AppUsernamePwdAuthenticationProvider implements AuthenticationProvi
         String username = authentication.getName();
         String pwd = Objects.requireNonNull(authentication.getCredentials()).toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        System.out.println("Message After loadUserByUsername(username)");
         if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } else {

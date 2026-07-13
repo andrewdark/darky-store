@@ -12,6 +12,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
@@ -43,11 +46,14 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 Environment env = getEnvironment();
                 String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY, ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                Claims claims = Jwts.parser().verifyWith(secretKey)
-                        .build().parseSignedClaims(jwt).getPayload();
+                Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwt).getPayload();
                 String username = String.valueOf(claims.get("username"));
+                String roles = String.valueOf(claims.get("roles"));
+                roles = roles.substring(1, roles.length() - 1);
+                List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
+
                 Authentication authentication = new UsernamePasswordAuthenticationToken(username,
-                        null, Collections.emptyList());
+                        null, grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
                 throw new BadCredentialsException("Invalid Token received!");

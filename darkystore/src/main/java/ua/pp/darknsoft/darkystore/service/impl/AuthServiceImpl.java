@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import ua.pp.darknsoft.darkystore.dto.RegisterRequestDto;
 import ua.pp.darknsoft.darkystore.model.Address;
 import ua.pp.darknsoft.darkystore.model.Customer;
+import ua.pp.darknsoft.darkystore.model.Role;
 import ua.pp.darknsoft.darkystore.repository.CustomerRepository;
 import ua.pp.darknsoft.darkystore.service.IAuthService;
 
@@ -73,6 +74,10 @@ public class AuthServiceImpl implements IAuthService {
         address.setPostalCode("");
         address.setCountry("");
         customer.setAddress(address);
+
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        customer.getRoles().add(role);
         customerRepository.save(customer);
     }
 }
