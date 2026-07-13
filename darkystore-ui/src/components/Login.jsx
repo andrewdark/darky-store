@@ -18,7 +18,9 @@ const Login = () => {
             loginSuccess(actionData.jwtToken, actionData.user);
             toast.success("Success!");
             sessionStorage.removeItem("redirectPath");
-            navigate(from);
+            setTimeout(() => {
+                navigate(from);
+            }, 100)
         } else if (actionData?.errors) {
             toast.error(actionData.errors.message || "Login failed.");
         }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.pp.darknsoft.darkystore.dto.ProfileRequestDto;
 import ua.pp.darknsoft.darkystore.dto.ProfileResponseDto;
+import ua.pp.darknsoft.darkystore.model.Address;
 import ua.pp.darknsoft.darkystore.model.Customer;
 import ua.pp.darknsoft.darkystore.repository.CustomerRepository;
 import ua.pp.darknsoft.darkystore.service.IProfileService;
@@ -26,8 +27,26 @@ public class ProfileServiceImpl implements IProfileService {
     }
 
     @Override
+    @Transactional
     public ProfileResponseDto updateProfile(ProfileRequestDto profileRequestDto) {
-        return null;
+        Customer customer = getAuthenticatedCustomer();
+        boolean isEmailUpdated = !customer.getEmail().equals(profileRequestDto.email().trim());
+        BeanUtils.copyProperties(profileRequestDto, customer);
+        Address address = customer.getAddress();
+        if (address == null) {
+            address = new Address();
+            address.setCustomer(customer);
+        }
+        address.setStreet(profileRequestDto.street());
+        address.setCity(profileRequestDto.city());
+        address.setState(profileRequestDto.state());
+        address.setPostalCode(profileRequestDto.postalCode());
+        address.setCountry(profileRequestDto.country());
+        customer.setAddress(address);
+        customer = customerRepository.save(customer);
+        ProfileResponseDto profileResponseDto = mapCustomerToProfileResponseDto(customer);
+        profileResponseDto.setEmailUpdated(isEmailUpdated);
+        return profileResponseDto;
     }
 
     private Customer getAuthenticatedCustomer() {

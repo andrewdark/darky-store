@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import apiClient from "../api/apiClient";
 import { Form, useLoaderData, useActionData, useNavigate, } from "react-router-dom";
 import PageTitle from "./PageTitle";
@@ -7,12 +7,12 @@ import { useAuth } from "../store/auth-context";
 
 const Profile = () => {
     const initialProfileData = useLoaderData();
-    const isSubmitting = true;
+    const isSubmitting = navigation.state === "submitting";
     const actionData = useActionData();
     const navigate = useNavigate();
     const { logout } = useAuth();
-
-    const profileData = actionData?.success ? actionData.profileData : initialProfileData;
+    const [profileData, setProfileData] = useState(initialProfileData);
+    // const profileData = actionData?.success ? actionData.profileData : initialProfileData;
 
     useEffect(() => {
         if (actionData?.success) {
