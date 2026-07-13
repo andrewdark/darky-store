@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -42,7 +45,7 @@ public class Customer extends BaseEntity {
     @Column(name = "password_hash", nullable = false, length = 500)
     private String passwordHash;
 
-    @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Address address;
 
     @Override
@@ -58,4 +61,8 @@ public class Customer extends BaseEntity {
         result = 31 * result + mobileNumber.hashCode();
         return result;
     }
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", nullable = false)
+    Set<Role> roles = new LinkedHashSet<>();
 }
