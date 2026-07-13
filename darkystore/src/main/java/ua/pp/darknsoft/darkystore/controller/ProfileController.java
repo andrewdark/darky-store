@@ -22,15 +22,8 @@ private final CustomerRepository customerRepository;
 
     @GetMapping
     public ResponseEntity<ProfileResponseDto> getProfile() {
-        Customer cust = getAuthenticatedCustomer();
         ProfileResponseDto responseDto = iProfileService.getProfile();
         return ResponseEntity.ok(responseDto);
     }
 
-    private Customer getAuthenticatedCustomer() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        return customerRepository.findByEmail(email).
-                orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
 }
