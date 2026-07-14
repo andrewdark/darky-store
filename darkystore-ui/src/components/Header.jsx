@@ -8,7 +8,7 @@ import { useAuth } from '../store/auth-context';
 import { toast } from "react-toastify";
 
 const Header = () => {
-    const isAdmin = true;
+
     const [isUserMenuOpen, setUserMenuOpen] = useState(false);
     const [isAdminMenuOpen, setAdminMenuOpen] = useState(false);
     const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
@@ -16,6 +16,7 @@ const Header = () => {
 
     const { totalQuantity } = useCart();
     const { isAuthenticated, logout, user } = useAuth();
+    const isAdmin = user?.roles?.includes("ROLE_ADMIN");
     const navLinkClass = "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
     const dropdownLinkClass = "block w-full text-left px-4 py-2 text-base md:text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
 
