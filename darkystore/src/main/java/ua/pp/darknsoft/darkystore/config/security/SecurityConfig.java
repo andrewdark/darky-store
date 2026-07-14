@@ -11,6 +11,7 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -37,11 +40,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+        http.csrf(csrfConfig -> csrfConfig.
+                        csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(requests -> {
-                            publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
+                .authorizeHttpRequests((requests) -> {
+                            publicPaths.forEach(path ->
+                                    requests.requestMatchers(path).permitAll());
                             requests.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
                             requests.anyRequest().hasAnyRole("USER", "ADMIN");
                         }
@@ -49,6 +54,7 @@ public class SecurityConfig {
         http.addFilterBefore(authenticationJwtTokenFilter(), BasicAuthenticationFilter.class);
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
+        //http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
@@ -95,7 +101,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173", "http://192.168.9.102:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); //Collections.singletonList("*")
-        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept")); //, "X-Requested-With"
+        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept", "x-xsrf-token", "X-XSRF-TOKEN")); //, "X-Requested-With"
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
