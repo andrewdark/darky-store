@@ -60,19 +60,30 @@ const CheckoutForm = () => {
     //TODO: implement LOGIC
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         if (!stripe || !elements) {
             setErrorMessage("Stripe.js is not loaded yet.");
+            return;
+        }
+        if (Object.values(elementErrors).some((error) => error)) {
+            setErrorMessage("Please correct the highlighted errors.");
             return;
         }
 
         setIsProcessing(true);
 
         try {
-            const response = { data: { clientSecret: null } };
-            console.log("getting secret info from back-srv ...", response);
-            const { clientSecret } = response.data;
+            const response = { data: { clientSecret: "KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30" } };
 
-            if (clientSecret) {
+            const { clientSecret } = response.data;
+            console.log("getting secret info from back-srv ...", clientSecret);
+            const { error, paymentIntent } = { error: "", paymentIntent: { status: "succeeded" } };
+
+            if (error) {
+                setErrorMessage(error.message || "Payment failed. Please try again.");
+            } else if (paymentIntent && paymentIntent.status === "succeeded") {
+                toast.success("Payment successful!");
+                console.log("Stripe: ", paymentIntent);
                 sessionStorage.setItem("skipRedirectPath", "true");
                 clearCart();
                 navigate("/order-success");

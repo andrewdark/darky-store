@@ -19,6 +19,7 @@ import AuthProvider from "./store/AuthProvider.jsx";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Profile from './components/Profile.jsx';
 import Orders from './components/Orders.jsx';
+import OrderSuccess from "./components/OrderSuccess.jsx";
 import { Messages, AdminOrders } from './components/admin'
 
 import { productsLoader } from "./components/Home.jsx";
@@ -43,6 +44,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/products/:productId" element={<ProductDetail />} />
     <Route element={<ProtectedRoute />}>
       <Route path="/checkout" element={<CheckoutForm />} />
+      <Route path="/order-success" element={<OrderSuccess />} />
       <Route path="/profile" element={<Profile />} loader={profileLoader} action={profileAction} shouldRevalidate={({ actionResult }) => {
         return !actionResult?.success;
       }} />
