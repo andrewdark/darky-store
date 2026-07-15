@@ -26,6 +26,10 @@ import { profileLoader, profileAction } from "./components/Profile.jsx";
 import { contactAction } from "./components/Contact.jsx";
 import { loginAction } from "./components/Login.jsx";
 import { registerAction } from "./components/Register.jsx";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe("pk_test_51RJQvF4PbYqEP0SGCcnUiXIBFtwmjlfv7CvYdwgLRyrs3pLxejSAYED3goAAkxwKVkgP70GvS0LkzhIHWSfpHWYE00jR1SrCza");
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
@@ -52,7 +56,7 @@ const routeDefinitions = createRoutesFromElements(
 const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById('root')).render(
-  <>
+  <Elements stripe={stripePromise}>
     <AuthProvider>
       <CartProvider>
         <RouterProvider router={appRouter} />
@@ -60,6 +64,6 @@ createRoot(document.getElementById('root')).render(
     </AuthProvider>
 
     <ToastContainer position='top-center' theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"} transition={Bounce} />
-  </>
+  </Elements>
 
 )
