@@ -64,11 +64,20 @@ const CheckoutForm = () => {
             setErrorMessage("Stripe.js is not loaded yet.");
             return;
         }
+
         setIsProcessing(true);
 
         try {
-            const response = null;
-            console.log("Sending request ...", response);
+            const response = { data: { clientSecret: null } };
+            console.log("getting secret info from back-srv ...", response);
+            const { clientSecret } = response.data;
+
+            if (clientSecret) {
+                sessionStorage.setItem("skipRedirectPath", "true");
+                clearCart();
+                navigate("/order-success");
+            }
+
         } catch (error) {
             setErrorMessage("Error processing payment. Please try again later.");
             console.error("Error creating PaymentIntent:", error);
