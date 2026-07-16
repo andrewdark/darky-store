@@ -15,4 +15,5 @@ public class UserDto {
     private String email;
     private String mobileNumber;
     private Set<String> roles;
+    private AddressDto address;
 }

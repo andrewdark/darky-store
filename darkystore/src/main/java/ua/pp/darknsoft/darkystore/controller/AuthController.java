@@ -21,6 +21,7 @@ import ua.pp.darknsoft.darkystore.dto.RegisterRequestDto;
 import ua.pp.darknsoft.darkystore.dto.UserDto;
 import ua.pp.darknsoft.darkystore.security.AppUser;
 import ua.pp.darknsoft.darkystore.service.IAuthService;
+import ua.pp.darknsoft.darkystore.service.IProfileService;
 import ua.pp.darknsoft.darkystore.util.JwtUtil;
 
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final IAuthService authService;
+    private final IProfileService profileService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
@@ -52,6 +54,7 @@ public class AuthController {
             userDto.setMobileNumber(loggedInUser.getMobileNumber());
             userDto.setEmail(loggedInUser.getEmail());
             userDto.setRoles(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
+            userDto.setAddress(loggedInUser.getAddress());
             String jwtToken = jwtUtil.generateJwtToken(authentication);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));

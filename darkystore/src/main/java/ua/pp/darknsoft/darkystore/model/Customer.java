@@ -65,4 +65,6 @@ public class Customer extends BaseEntity {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id", nullable = false)
     Set<Role> roles = new LinkedHashSet<>();
+
+
 }

@@ -10,6 +10,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import ua.pp.darknsoft.darkystore.dto.AddressDto;
+import ua.pp.darknsoft.darkystore.dto.ContactRecord;
 
 import java.util.Objects;
 
@@ -20,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "address")
-public class Address extends BaseEntity{
+public class Address extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +59,10 @@ public class Address extends BaseEntity{
     @NotNull
     @Column(name = "country", nullable = false, length = 100)
     private String country;
+
+    public AddressDto toRecord() {
+        return new AddressDto(street, city, state, postalCode, country);
+    }
 
     @Override
     public final boolean equals(Object o) {

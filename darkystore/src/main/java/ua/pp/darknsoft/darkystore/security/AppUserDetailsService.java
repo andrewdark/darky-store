@@ -23,11 +23,13 @@ public class AppUserDetailsService implements UserDetailsService {
                 () -> new UsernameNotFoundException(
                         "User details not found for the user: " + username)
         );
-        List<SimpleGrantedAuthority> grantedAuthorities = customer.getRoles().stream().map(el->new SimpleGrantedAuthority(el.getName())).toList();
+        List<SimpleGrantedAuthority> grantedAuthorities = customer.getRoles().stream().map(el -> new SimpleGrantedAuthority(el.getName())).toList();
         AppUser abbUser = new AppUser(customer.getCustomerId(), customer.getEmail(), customer.getPasswordHash(), grantedAuthorities);
         abbUser.setName(customer.getName());
         abbUser.setEmail(customer.getEmail());
         abbUser.setMobileNumber(String.valueOf(customer.getMobileNumber()));
+
+        abbUser.setAddress(customer.getAddress().toRecord());
         return abbUser;
     }
 }
