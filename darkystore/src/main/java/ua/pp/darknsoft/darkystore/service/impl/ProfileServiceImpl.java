@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.pp.darknsoft.darkystore.dto.AddressDto;
 import ua.pp.darknsoft.darkystore.dto.ProfileRequestDto;
 import ua.pp.darknsoft.darkystore.dto.ProfileResponseDto;
 import ua.pp.darknsoft.darkystore.model.Address;
@@ -61,11 +62,14 @@ public class ProfileServiceImpl implements IProfileService {
         ProfileResponseDto profileResponseDto = new ProfileResponseDto();
         BeanUtils.copyProperties(customer, profileResponseDto);
         if (customer.getAddress() != null) {
-            profileResponseDto.setStreet(customer.getAddress().getStreet());
-            profileResponseDto.setCity(customer.getAddress().getCity());
-            profileResponseDto.setState(customer.getAddress().getState());
-            profileResponseDto.setPostalCode(customer.getAddress().getPostalCode());
-            profileResponseDto.setCountry(customer.getAddress().getCountry());
+            AddressDto addressDto = new AddressDto(
+                    customer.getAddress().getStreet(),
+                    customer.getAddress().getCity(),
+                    customer.getAddress().getState(),
+                    customer.getAddress().getPostalCode(),
+                    customer.getAddress().getCountry()
+            );
+            profileResponseDto.setAddressDto(addressDto);
         }
         return profileResponseDto;
     }

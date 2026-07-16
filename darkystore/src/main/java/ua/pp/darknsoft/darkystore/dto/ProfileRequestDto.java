@@ -34,6 +34,6 @@ public record ProfileRequestDto(@NotBlank(message = "Name is required")
                                 String postalCode,
 
                                 @NotBlank(message = "Country is required")
-                                @Size(min = 3, max = 30, message = "The length of the country should be between 3 and 30 characters")
+                                @Size(min = 2, max = 2, message = "The length of the country should be 2 characters")
                                 String country) {
 }

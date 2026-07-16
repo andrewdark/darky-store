@@ -20,7 +20,6 @@ const CheckoutForm = () => {
         cardExpiry: "",
         cardCvc: "",
     });
-
     const isDarkMode = localStorage.getItem("theme") === "dark";
 
     const labelStyle =
