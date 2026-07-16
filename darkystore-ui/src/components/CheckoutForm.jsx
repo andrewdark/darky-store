@@ -72,20 +72,65 @@ const CheckoutForm = () => {
         setIsProcessing(true);
 
         try {
-            const response = { data: { clientSecret: "KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30" } };
+            const response = await apiClient.post("/payment/create-payment-intent", {
+                amount: totalPrice * 100,
+                currency: "usd",
+            });
 
             const { clientSecret } = response.data;
             console.log("getting secret info from back-srv ...", clientSecret);
             const { error, paymentIntent } = { error: "", paymentIntent: { status: "succeeded" } };
 
+            // const { error, paymentIntent } = await stripe.confirmCardPayment(
+            //     clientSecret,
+            //     {
+            //         payment_method: {
+            //             card: elements.getElement(CardNumberElement),
+            //             billing_details: {
+            //                 name: user.name,
+            //                 email: user.email,
+            //                 phone: user.mobileNumber,
+            //                 address: {
+            //                     line1: user.street,
+            //                     city: user.city,
+            //                     state: user.state,
+            //                     postal_code: user.postalCode,
+            //                     country: user.country,
+            //                 },
+            //             },
+            //         },
+            //     }
+            // );
+
             if (error) {
                 setErrorMessage(error.message || "Payment failed. Please try again.");
             } else if (paymentIntent && paymentIntent.status === "succeeded") {
                 toast.success("Payment successful!");
-                console.log("Stripe: ", paymentIntent);
-                sessionStorage.setItem("skipRedirectPath", "true");
-                clearCart();
-                navigate("/order-success");
+                try {
+                    const config = {
+                        headers: {
+                            'Stripe-Signature': 'Secret', // Токен авторизації
+                        }
+                    };
+
+                    await apiClient.post("/stripe/webhook", {
+                        totalPrice: totalPrice,
+                        paymentId: paymentIntent.id,
+                        paymentStatus: paymentIntent.status,
+                        items: cart.map((item) => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                            price: item.price,
+                        })),
+
+                    }, config,);
+                    sessionStorage.setItem("skipRedirectPath", "true");
+                    clearCart();
+                    navigate("/order-success");
+                } catch (orderError) {
+                    console.error("Failed to create order:", orderError);
+                    setErrorMessage("Order creation failed. Please contact support.");
+                }
             }
 
         } catch (error) {

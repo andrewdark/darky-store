@@ -23,7 +23,7 @@ const Cart = () => {
     const navigation = useNavigate();
 
     const handleClick = () => {
-        navigation("/home", { state: { username: "dark" } });
+        navigation("/home", { state: { username: user.username ?? "dark" } });
     };
 
     return (

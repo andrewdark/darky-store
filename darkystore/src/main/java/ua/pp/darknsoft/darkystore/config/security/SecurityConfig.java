@@ -101,7 +101,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173", "http://192.168.9.102:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); //Collections.singletonList("*")
-        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept", "x-xsrf-token", "X-XSRF-TOKEN")); //, "X-Requested-With"
+        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept", "x-xsrf-token", "X-XSRF-TOKEN","Stripe-Signature")); //, "X-Requested-With"
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
