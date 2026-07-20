@@ -79,7 +79,7 @@ const CheckoutForm = () => {
 
             const { clientSecret } = response.data;
             console.log("getting secret info from back-srv ...", clientSecret);
-            const { error, paymentIntent } = { error: "", paymentIntent: { status: "succeeded" } };
+            const { error, paymentIntent } = { error: "", paymentIntent: { id: "test_4242", status: "succeeded" } };
 
             // const { error, paymentIntent } = await stripe.confirmCardPayment(
             //     clientSecret,
@@ -107,13 +107,8 @@ const CheckoutForm = () => {
             } else if (paymentIntent && paymentIntent.status === "succeeded") {
                 toast.success("Payment successful!");
                 try {
-                    const config = {
-                        headers: {
-                            'Stripe-Signature': 'Secret', // Токен авторизації
-                        }
-                    };
 
-                    await apiClient.post("/stripe/webhook", {
+                    await apiClient.post("/orders", {
                         totalPrice: totalPrice,
                         paymentId: paymentIntent.id,
                         paymentStatus: paymentIntent.status,
@@ -123,7 +118,15 @@ const CheckoutForm = () => {
                             price: item.price,
                         })),
 
-                    }, config,);
+                    },);
+
+                    const config = {
+                        headers: {
+                            'Stripe-Signature': 'Secret', // Токен авторизації
+                        }
+                    };
+                    await apiClient.post("/stripe/webhook", { status: "CONFIRMED" }, config,);
+
                     sessionStorage.setItem("skipRedirectPath", "true");
                     clearCart();
                     navigate("/order-success");
@@ -146,7 +149,7 @@ const CheckoutForm = () => {
             <div
                 className={
                     isProcessing
-                        ? "visible  flex flex-col justify-center items-center my-[200px] "
+                        ? "visible  flex flex-col justify-center items-center my-50 "
                         : "hidden"
                 }
             >
