@@ -1,6 +1,7 @@
 package ua.pp.darknsoft.darkystore.security.filter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -55,6 +56,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(username,
                         null, grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (ExpiredJwtException exception) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token Expired");
+                return;
             } catch (Exception e) {
                 throw new BadCredentialsException("Invalid Token received!");
             }
