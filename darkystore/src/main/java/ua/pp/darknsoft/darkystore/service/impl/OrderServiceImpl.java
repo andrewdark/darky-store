@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.pp.darknsoft.darkystore.constants.ApplicationConstants;
 import ua.pp.darknsoft.darkystore.dto.OrderItemDto;
+import ua.pp.darknsoft.darkystore.dto.OrderItemResponseDto;
 import ua.pp.darknsoft.darkystore.dto.OrderRequestDto;
+import ua.pp.darknsoft.darkystore.dto.OrderResponseDto;
 import ua.pp.darknsoft.darkystore.exception.ResourceNotFoundException;
 import ua.pp.darknsoft.darkystore.model.Customer;
 import ua.pp.darknsoft.darkystore.model.Order;
@@ -61,5 +63,51 @@ public class OrderServiceImpl implements IOrderService {
         }).collect(Collectors.toSet());
         order.setOrderItems(orderItems);
         orderRepository.save(order);
+    }
+
+    @Override
+    public List<OrderResponseDto> getCustomerOrders() {
+        Customer customer = profileService.getAuthenticatedCustomer();
+        List<Order> orders = orderRepository.findByCustomerOrderByCreatedAtDesc(customer);
+        return orders.stream().map(this::mapToOrderResponseDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderResponseDto> getAllPendingOrders() {
+        List<Order> orders = orderRepository.findByOrderStatus(ApplicationConstants.ORDER_STATUS_CREATED);
+        return orders.stream().map(this::mapToOrderResponseDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Order updateOrderStatus(Long orderId, String orderStatus) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new ResourceNotFoundException("Order", "OrderID", orderId.toString())
+        );
+        order.setOrderStatus(orderStatus);
+        return orderRepository.save(order);
+    }
+
+    /**
+     * Map Order entity to OrderResponseDto
+     */
+    private OrderResponseDto mapToOrderResponseDTO(Order order) {
+        // Map Order Items
+        List<OrderItemResponseDto> itemDTOs = order.getOrderItems().stream()
+                .map(this::mapToOrderItemResponseDTO)
+                .collect(Collectors.toList());
+        OrderResponseDto orderResponseDto = new OrderResponseDto(order.getOrderId()
+                , order.getOrderStatus(), order.getTotalPrice(), order.getCreatedAt().toString()
+                , itemDTOs);
+        return orderResponseDto;
+    }
+
+    /**
+     * Map OrderItem entity to OrderItemResponseDto
+     */
+    private OrderItemResponseDto mapToOrderItemResponseDTO(OrderItem orderItem) {
+        OrderItemResponseDto itemDTO = new OrderItemResponseDto(
+                orderItem.getProduct().getName(), orderItem.getQuantity(),
+                orderItem.getPrice(), orderItem.getProduct().getImageUrl());
+        return itemDTO;
     }
 }
