@@ -33,9 +33,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException exception, WebRequest webRequest) {
         log.error("An exception occurred due to : {}", exception.getMessage());
         Map<String, String> errors = new HashMap<>();
-        errors.put("timestamp",LocalDateTime.now().toString());
+        errors.put("timestamp", LocalDateTime.now().toString());
         errors.put("status", HttpStatus.BAD_REQUEST.toString());
-        errors.put("path", webRequest.getDescription(false) );
+        errors.put("path", webRequest.getDescription(false));
         errors.put("error", "Validation Exception");
         List<FieldError> fieldErrorList = exception.getBindingResult().getFieldErrors();
         fieldErrorList.forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
@@ -52,5 +52,19 @@ public class GlobalExceptionHandler {
                 errors.put(constraintViolation.getPropertyPath().toString(),
                         constraintViolation.getMessage()));
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleResourceNotFoundException(ResourceNotFoundException exception,
+                                                                            WebRequest webRequest) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.NOT_FOUND,
+                exception.getMessage(),
+                webRequest.getDescription(false)
+
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
 }
