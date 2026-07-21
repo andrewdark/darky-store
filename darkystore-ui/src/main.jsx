@@ -31,6 +31,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { ordersLoader } from "./components/Orders.jsx";
 import { adminOrdersLoader } from "./components/admin/AdminOrders.jsx"
+import { messagesLoader } from "./components/admin/Messages.jsx"
 
 const stripePromise = loadStripe("pk_test_51RJQvF4PbYqEP0SGCcnUiXIBFtwmjlfv7CvYdwgLRyrs3pLxejSAYED3goAAkxwKVkgP70GvS0LkzhIHWSfpHWYE00jR1SrCza");
 
@@ -52,7 +53,7 @@ const routeDefinitions = createRoutesFromElements(
       }} />
       <Route path="/orders" element={<Orders />} loader={ordersLoader} />
       <Route path="/admin/orders" element={<AdminOrders />} loader={adminOrdersLoader} />
-      <Route path="/admin/messages" element={<Messages />} />
+      <Route path="/admin/messages" element={<Messages />} loader={messagesLoader} />
     </Route>
   </Route>
 );

@@ -41,8 +41,9 @@ public class ContactServiceImpl implements IContactService {
         List<Contact> contacts = contactRepository.findByStatus(ApplicationConstants.OPEN_MESSAGE);
         return contacts.stream().map(Contact::toResponseDto).collect(Collectors.toList());
     }
-    
+
     @Override
+    @Transactional
     public void updateMessageStatus(Long contactId, String status) {
         Contact contact = contactRepository.findById(contactId).orElseThrow(
                 () -> new ResourceNotFoundException("Contact", "ContactID", contactId.toString())
