@@ -79,6 +79,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    @Transactional
     public Order updateOrderStatus(Long orderId, String orderStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new ResourceNotFoundException("Order", "OrderID", orderId.toString())

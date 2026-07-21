@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.pp.darknsoft.darkystore.dto.ContactRecord;
+import ua.pp.darknsoft.darkystore.dto.ContactResponseDto;
 import ua.pp.darknsoft.darkystore.model.Contact;
 import ua.pp.darknsoft.darkystore.repository.ContactRepository;
 import ua.pp.darknsoft.darkystore.service.IContactService;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +30,16 @@ public class ContactServiceImpl implements IContactService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    //TODO: implements method
+    @Override
+    public List<ContactResponseDto> getAllOpenMessages() {
+        return List.of();
+    }
+    //TODO: implements method
+    @Override
+    public void updateMessageStatus(Long contactId, String status) {
+
     }
 }
