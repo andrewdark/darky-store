@@ -20,9 +20,10 @@ CREATE TABLE IF NOT EXISTS public.contacts
     email         text                                NOT NULL,
     mobile_number text                                NOT NULL,
     message       text                                NOT NULL,
+    status        text                                NOT NULL,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_by    text                                NOT NULL,
-    updated_at    TIMESTAMP                       DEFAULT NULL,
-    updated_by    text                            DEFAULT NULL
+    updated_at    TIMESTAMP DEFAULT NULL,
+    updated_by    text      DEFAULT NULL
 );
 ALTER TABLE IF EXISTS public.contacts OWNER to dark;

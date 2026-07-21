@@ -2,9 +2,13 @@ package ua.pp.darknsoft.darkystore.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ua.pp.darknsoft.darkystore.dto.ContactRecord;
+import ua.pp.darknsoft.darkystore.dto.ContactResponseDto;
 
 import java.util.Objects;
 
@@ -15,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "contacts")
-public class Contact extends BaseEntity{
+public class Contact extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contact_id", nullable = false)
@@ -33,13 +37,20 @@ public class Contact extends BaseEntity{
     @Column(name = "mobile_number", nullable = false)
     private String mobileNumber;
 
-
     @NotBlank
     @Column(name = "message", nullable = false)
     private String message;
 
+    @NotBlank
+    @Column(name = "status", nullable = false)
+    private String status;
+
     public ContactRecord toRecord() {
-        return new ContactRecord(contactId, name, email, mobileNumber, message, super.getCreatedAt(), super.getCreatedBy(), super.getUpdatedAt(), super.getUpdatedBy());
+        return new ContactRecord(contactId, name, email, mobileNumber, message, status, super.getCreatedAt(), super.getCreatedBy(), super.getUpdatedAt(), super.getUpdatedBy());
+    }
+
+    public ContactResponseDto toResponseDto() {
+        return new ContactResponseDto(contactId, name, email, mobileNumber, message, status);
     }
 
     @Override

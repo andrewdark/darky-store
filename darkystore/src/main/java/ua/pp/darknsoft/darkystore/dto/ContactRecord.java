@@ -12,7 +12,7 @@ public record ContactRecord(Long contactId,
                             @Size(min = 4, max = 30, message = "Must be between 5 and 30 characters") String name,
                             @NotBlank(message = "Field cannot be empty") @Email(message = "Invalid email address") String email,
                             @Pattern(regexp = "^\\d{10}$", message = "Must be 10 digits") String mobileNumber,
-                            @Size(min = 5, max = 255, message = "Must be between 5 and 255 characters") String message,
+                            @Size(min = 5, max = 255, message = "Must be between 5 and 255 characters") String message, String status,
                             Instant createdAt, String createdBy, Instant updatedAt, String updatedBy) {
 
     public Contact toContact() {
@@ -22,6 +22,7 @@ public record ContactRecord(Long contactId,
                 .email(email)
                 .mobileNumber(mobileNumber)
                 .message(message)
+                .status(status)
                 .build();
     }
 }
