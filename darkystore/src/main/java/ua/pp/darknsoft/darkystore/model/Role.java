@@ -28,7 +28,7 @@ public class Role extends BaseEntity {
 
     @Size(max = 50)
     @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, length = 50, unique = true)
     private String name;
 
     @Setter(AccessLevel.NONE)
@@ -46,5 +46,17 @@ public class Role extends BaseEntity {
     public void removeCustomer(Customer customer) {
         this.customers.remove(customer);
         customer.getRoles().remove(this);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Role role)) return false;
+
+        return name.equals(role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }
