@@ -1,6 +1,7 @@
 package ua.pp.darknsoft.darkystore.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ public class ProductServiceImpl implements IProductService {
     private final ProductRepository productRepository;
 
     @Override
+    @Cacheable(value = "productsList", key = "'allProducts'")
     public List<ProductRecord> getProducts() {
         productRepository.findById(1L).ifPresent(System.out::println);
         return productRepository.findAll(Sort.by("productId")).stream().map(Product::toRecord).toList();
