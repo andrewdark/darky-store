@@ -3,10 +3,7 @@ package ua.pp.darknsoft.darkystore.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.LinkedHashSet;
@@ -62,9 +59,22 @@ public class Customer extends BaseEntity {
         return result;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @Setter(AccessLevel.NONE)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "customers_roles",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     Set<Role> roles = new LinkedHashSet<>();
 
+    public void addRole(Role role) {
+        this.roles.add(role);
+        role.getCustomers().add(this); // Додаємо себе в колекцію покупців цієї ролі!
+    }
 
+    public void removeRole(Role role) {
+        this.roles.remove(role);
+        role.getCustomers().remove(this); // Видаляємо себе з колекції покупців цієї ролі!
+    }
 }

@@ -15,6 +15,7 @@ import ua.pp.darknsoft.darkystore.model.Address;
 import ua.pp.darknsoft.darkystore.model.Customer;
 import ua.pp.darknsoft.darkystore.model.Role;
 import ua.pp.darknsoft.darkystore.repository.CustomerRepository;
+import ua.pp.darknsoft.darkystore.repository.RoleRepository;
 import ua.pp.darknsoft.darkystore.service.IAuthService;
 
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class AuthServiceImpl implements IAuthService {
     private final CustomerRepository  customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompromisedPasswordChecker compromisedPasswordChecker;
+    private final RoleRepository roleRepository;
 
     @Override
     public void checkRegistrationData(RegisterRequestDto registerRequestDto) throws MethodArgumentNotValidException {
@@ -75,9 +77,7 @@ public class AuthServiceImpl implements IAuthService {
         address.setCountry("");
         customer.setAddress(address);
 
-        Role role = new Role();
-        role.setName("ROLE_USER");
-        customer.getRoles().add(role);
+        roleRepository.findByName("ROLE_USER").ifPresent(customer::addRole);
         customerRepository.save(customer);
     }
 }
