@@ -17,7 +17,7 @@ const ProductDetail = () => {
 
     const handleAddToCart = () => {
         if (quantity < 1) return;
-        dispatch(addToCart(product, quantity));
+        dispatch(addToCart({ product, quantity }));
     };
 
     const handleMouseMove = (e) => {

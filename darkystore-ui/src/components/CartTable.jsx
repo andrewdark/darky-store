@@ -15,7 +15,7 @@ const CartTable = () => {
     const updateCartQuantity = (productId, quantity) => {
         const product = cart.find((item) => item.productId === productId);
         dispatch(
-            addToCart(product, quantity - (product?.quantity || 0))
+            addToCart({ product, quantity: quantity - (product?.quantity || 0) })
         );
 
     };
@@ -73,7 +73,7 @@ const CartTable = () => {
                             <td className="px-4 sm:px-6 py-4">
                                 <button
                                     aria-label="delete-item"
-                                    onClick={dispatch(removeFromCart(item.productId))}
+                                    onClick={dispatch(removeFromCart({ productId: item.productId }))}
                                     className="text-primary dark:text-red-400 border border-primary dark:border-red-400 p-2 rounded hover:bg-lighter dark:hover:bg-gray-700"
                                 >
                                     <FontAwesomeIcon icon={faTimes} />

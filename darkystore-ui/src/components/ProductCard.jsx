@@ -25,7 +25,7 @@ const ProductCard = ({ product }) => {
                     </div>
                     <button
                         className="bg-primary dark:bg-light text-white dark:text-primary font-medium text-sm py-2 px-4 rounded-md hover:cursor-pointer"
-                        onClick={dispatch(addToCart(product, 1))}
+                        onClick={dispatch(addToCart({ product, quantity: 1 }))}
                     >
                         Add to card
                     </button>
