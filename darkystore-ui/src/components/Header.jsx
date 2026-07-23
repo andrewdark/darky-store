@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket, faTags, faSun, faMoon, faAngleDown, } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { useCart } from "../store/cart-context";
+import { useSelector } from 'react-redux';
+import { selectTotalQuantity } from '../store/cart-slice'
 import { useAuth } from '../store/auth-context';
 import { toast } from "react-toastify";
 
@@ -14,7 +15,7 @@ const Header = () => {
     const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
     const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
 
-    const { totalQuantity } = useCart();
+    const totalQuantity = useSelector(selectTotalQuantity);
     const { isAuthenticated, logout, user } = useAuth();
     const isAdmin = user?.roles?.includes("ROLE_ADMIN");
     const navLinkClass = "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";

@@ -2,12 +2,13 @@ import PageTitle from "./PageTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { useMemo } from 'react';
 import emptyCartImage from "../assets/util/emptycart.png";
-import { useCart } from "../store/cart-context";
+import { useSelector } from 'react-redux';
+import { selectCartItems } from '../store/cart-slice';
 import { useAuth } from "../store/auth-context";
 import CartTable from './CartTable';
 
 const Cart = () => {
-    const { cart } = useCart();
+    const cart = useSelector(selectCartItems);
     const { isAuthenticated, user } = useAuth();
     // Memoize the cart length check to prevent re-renders
 

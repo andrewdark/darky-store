@@ -14,7 +14,6 @@ import Cart from "./components/Cart.jsx";
 import CheckoutForm from "./components/CheckoutForm.jsx"
 import ProductDetail from "./components/ProductDetail.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
-import CartProvider from "./store/CartProvider.jsx";
 import AuthProvider from "./store/AuthProvider.jsx";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Profile from './components/Profile.jsx';
@@ -32,6 +31,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { ordersLoader } from "./components/Orders.jsx";
 import { adminOrdersLoader } from "./components/admin/AdminOrders.jsx"
 import { messagesLoader } from "./components/admin/Messages.jsx"
+import { Provider } from 'react-redux';
+import store from './store/store.js';
 
 const stripePromise = loadStripe("pk_test_51RJQvF4PbYqEP0SGCcnUiXIBFtwmjlfv7CvYdwgLRyrs3pLxejSAYED3goAAkxwKVkgP70GvS0LkzhIHWSfpHWYE00jR1SrCza");
 
@@ -63,9 +64,9 @@ const appRouter = createBrowserRouter(routeDefinitions);
 createRoot(document.getElementById('root')).render(
   <Elements stripe={stripePromise}>
     <AuthProvider>
-      <CartProvider>
+      <Provider store={store}>
         <RouterProvider router={appRouter} />
-      </CartProvider>
+      </Provider>
     </AuthProvider>
 
     <ToastContainer position='top-center' theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"} transition={Bounce} />

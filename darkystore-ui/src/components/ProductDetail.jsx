@@ -2,7 +2,8 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import { faArrowLeft, faShoppingCart, faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCart } from "../store/cart-context";
+import { addToCart } from "../store/cart-slice";
+import { useDispatch } from 'react-redux';
 
 const ProductDetail = () => {
     const location = useLocation();
@@ -12,11 +13,11 @@ const ProductDetail = () => {
     const [isHovering, setIsHovering] = useState(false);
     const [backgroundPosition, setBackgroundPosition] = useState("center");
     const zoomRef = useRef(null);
-    const { addToCart } = useCart();
+    const dispatch = useDispatch();
 
     const handleAddToCart = () => {
         if (quantity < 1) return;
-        addToCart(product, quantity);
+        dispatch(addToCart(product, quantity));
     };
 
     const handleMouseMove = (e) => {
