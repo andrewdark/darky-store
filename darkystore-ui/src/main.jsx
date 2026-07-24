@@ -14,7 +14,6 @@ import Cart from "./components/Cart.jsx";
 import CheckoutForm from "./components/CheckoutForm.jsx"
 import ProductDetail from "./components/ProductDetail.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
-import AuthProvider from "./store/AuthProvider.jsx";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Profile from './components/Profile.jsx';
 import Orders from './components/Orders.jsx';
@@ -63,11 +62,9 @@ const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById('root')).render(
   <Elements stripe={stripePromise}>
-    <AuthProvider>
-      <Provider store={store}>
-        <RouterProvider router={appRouter} />
-      </Provider>
-    </AuthProvider>
+    <Provider store={store}>
+      <RouterProvider router={appRouter} />
+    </Provider>
 
     <ToastContainer position='top-center' theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"} transition={Bounce} />
   </Elements>

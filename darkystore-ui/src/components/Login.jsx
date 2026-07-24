@@ -3,19 +3,20 @@ import { useEffect } from "react";
 import { Form, Link, useActionData, useNavigate } from "react-router-dom";
 import apiClient from "../api/apiClient";
 import { toast } from "react-toastify";
-import { useAuth } from "../store/auth-context";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/auth-slice";
 
 const Login = () => {
     const labelStyle = "block text-lg font-semibold text-primary dark:text-light mb-2";
     const textFieldStyle = "w-full px-4 py-2 text-base border rounded-md transition border-primary dark:border-light focus:ring focus:ring-dark dark:focus:ring-lighter focus:outline-none text-gray-800 dark:text-lighter bg-white dark:bg-gray-600 placeholder-gray-400 dark:placeholder-gray-300";
     const actionData = useActionData();
     const navigate = useNavigate();
-    const { loginSuccess } = useAuth();
+    const dispatch = useDispatch();
     const from = sessionStorage.getItem("redirectPath") || "/home";
 
     useEffect(() => {
         if (actionData?.success) {
-            loginSuccess(actionData.jwtToken, actionData.user);
+            dispatch(loginSuccess({ jwtToken: actionData.jwtToken, user: actionData.user }));
             toast.success("Success!");
             sessionStorage.removeItem("redirectPath");
             setTimeout(() => {

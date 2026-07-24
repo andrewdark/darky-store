@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket, faTags, faSun, faMoon, faAngleDown, } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectTotalQuantity } from '../store/cart-slice'
-import { useAuth } from '../store/auth-context';
+import { selectIsAuthenticated, selectUser, logout } from "../store/auth-slice";
 import { toast } from "react-toastify";
 
 const Header = () => {
@@ -15,8 +15,10 @@ const Header = () => {
     const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
     const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
 
+    const dispatch = useDispatch();
     const totalQuantity = useSelector(selectTotalQuantity);
-    const { isAuthenticated, logout, user } = useAuth();
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const user = useSelector(selectUser);
     const isAdmin = user?.roles?.includes("ROLE_ADMIN");
     const navLinkClass = "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
     const dropdownLinkClass = "block w-full text-left px-4 py-2 text-base md:text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
@@ -73,7 +75,7 @@ const Header = () => {
     const handleLogout = (e) => {
         e.preventDefault();
         closeMenus();
-        logout();
+        dispatch(logout());
         toast.success("Logged out successfully!");
         navigate("/home");
     };

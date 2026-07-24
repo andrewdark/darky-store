@@ -3,14 +3,15 @@ import apiClient from "../api/apiClient";
 import { Form, useLoaderData, useActionData, useNavigate, } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import { toast } from "react-toastify";
-import { useAuth } from "../store/auth-context";
+import { useDispatch } from "react-redux";
+import { loginSuccess, logout } from "../store/auth-slice";
 
 const Profile = () => {
     const initialProfileData = useLoaderData();
     const isSubmitting = navigation.state === "submitting";
     const actionData = useActionData();
     const navigate = useNavigate();
-    const { loginSuccess, logout } = useAuth();
+    const dispatch = useDispatch();
     const [profileData, setProfileData] = useState(initialProfileData);
     // const profileData = actionData?.success ? actionData.profileData : initialProfileData;
 
@@ -18,7 +19,7 @@ const Profile = () => {
         if (actionData?.success) {
             if (actionData.profileData.emailUpdated) {
                 sessionStorage.setItem("skipRedirectPath", "true");
-                logout();
+                dispatch(logout());
                 toast.success(
                     "Logged out successfully! Login again with updated email"
                 );
@@ -33,7 +34,9 @@ const Profile = () => {
                         ...actionData.profileData, // updated fields
                     };
                     // Update in context
-                    loginSuccess(localStorage.getItem("jwtToken"), updatedUser);
+                    dispatch(
+                        loginSuccess({ jwtToken: localStorage.getItem("jwtToken"), user: updatedUser, })
+                    );
                 }
             }
         }

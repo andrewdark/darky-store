@@ -4,12 +4,13 @@ import { useMemo } from 'react';
 import emptyCartImage from "../assets/util/emptycart.png";
 import { useSelector } from 'react-redux';
 import { selectCartItems } from '../store/cart-slice';
-import { useAuth } from "../store/auth-context";
+import { selectUser, selectIsAuthenticated } from "../store/auth-slice";
 import CartTable from './CartTable';
 
 const Cart = () => {
     const cart = useSelector(selectCartItems);
-    const { isAuthenticated, user } = useAuth();
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const user = useSelector(selectUser);
     // Memoize the cart length check to prevent re-renders
 
     const isCartEmpty = cart.length === 0;

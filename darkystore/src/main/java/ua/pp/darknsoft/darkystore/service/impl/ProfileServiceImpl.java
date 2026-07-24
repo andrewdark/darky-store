@@ -12,8 +12,11 @@ import ua.pp.darknsoft.darkystore.dto.ProfileRequestDto;
 import ua.pp.darknsoft.darkystore.dto.ProfileResponseDto;
 import ua.pp.darknsoft.darkystore.model.Address;
 import ua.pp.darknsoft.darkystore.model.Customer;
+import ua.pp.darknsoft.darkystore.model.Role;
 import ua.pp.darknsoft.darkystore.repository.CustomerRepository;
 import ua.pp.darknsoft.darkystore.service.IProfileService;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +73,9 @@ public class ProfileServiceImpl implements IProfileService {
                     customer.getAddress().getCountry()
             );
             profileResponseDto.setAddressDto(addressDto);
+            if (customer.getRoles() != null) {
+                profileResponseDto.setRoles(customer.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
+            }
         }
         return profileResponseDto;
     }
