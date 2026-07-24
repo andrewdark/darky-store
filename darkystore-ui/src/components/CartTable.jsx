@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCartItems, addToCart, removeFromCart } from '../store/cart-slice';
+import { useSelector, useDispatch } from "react-redux";
+import { selectCartItems, addToCart, removeFromCart, } from "../store/cart-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-const CartTable = () => {
+export default function CartTable() {
     const dispatch = useDispatch();
     const cart = useSelector(selectCartItems);
 
@@ -17,7 +17,6 @@ const CartTable = () => {
         dispatch(
             addToCart({ product, quantity: quantity - (product?.quantity || 0) })
         );
-
     };
 
     return (
@@ -73,7 +72,9 @@ const CartTable = () => {
                             <td className="px-4 sm:px-6 py-4">
                                 <button
                                     aria-label="delete-item"
-                                    onClick={dispatch(removeFromCart({ productId: item.productId }))}
+                                    onClick={() =>
+                                        dispatch(removeFromCart({ productId: item.productId }))
+                                    }
                                     className="text-primary dark:text-red-400 border border-primary dark:border-red-400 p-2 rounded hover:bg-lighter dark:hover:bg-gray-700"
                                 >
                                     <FontAwesomeIcon icon={faTimes} />
@@ -97,6 +98,4 @@ const CartTable = () => {
             </table>
         </div>
     );
-};
-
-export default CartTable;
+}
